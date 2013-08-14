@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
 	char *mapl;
 	mapl = map;
 	mapl[0] = '#';
-	gen_map(mapl, 400);
+	gen_map(mapl, 4010);
 	char input[50];
 	player.water = 500;
 	player.food = 500;

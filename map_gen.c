@@ -39,9 +39,34 @@ void cave(char *map, int currpos) {
 		map[currpos-map_size_x-1] = 'C';
 		map[currpos+map_size_x+1] = 'C';
 		map[currpos+map_size_x-1] = 'C';
+		map[currpos+map_size_x] = 'c';
+		map[currpos-map_size_x] = 'c';
+		map[currpos] = 'c';
+		map[currpos-1] = 'c';
+		map[currpos+1] = 'c';
 		int q;
 		int i;
-		for (i = 0; i < 2; i++) {
+		q = rand()%4;
+		switch (q) {
+			case 0:
+				break;
+			case 1:
+				water.pos[water.count] = to_position(currpos);
+				water.count++;
+				printf("Water: %d/%d\n", water.pos[water.count-1].x, water.pos[water.count-1].y);
+				break;
+			case 2:
+				food.pos[food.count] = to_position(currpos);
+				food.count++;
+				break;
+			case 3:
+				food.pos[food.count] = to_position(currpos);
+				food.count++;
+				water.pos[water.count] = to_position(currpos);
+				water.count++;
+				break;
+		}
+		/*for (i = 0; i < 4; i++) {
 			q = rand()%4;
 			switch (q) {
 				case 0: map[currpos-map_size_x] = 'C'; break;
@@ -50,7 +75,7 @@ void cave(char *map, int currpos) {
 				case 3: map[currpos-1] = 'C'; break;
 				default: printf("Randomization error.\n"); break;
 			}
-		}
+		}*/
 	} else {
 		return;
 	}
@@ -78,10 +103,10 @@ void gen_area(char * map, int size, void (*wr)(char *, int)) {
 
 		int v = rand()%4;
 		switch (v) {
-			case 0: currpos = currpos-1; break;
-			case 1: currpos = currpos+1; break;
-			case 2: currpos = currpos-map_size_x; break;
-			case 3: currpos = currpos+map_size_x; break;
+			case 0: currpos = currpos-2; break;
+			case 1: currpos = currpos+2; break;
+			case 2: currpos = currpos-map_size_x-map_size_x; break;
+			case 3: currpos = currpos+map_size_x+map_size_x; break;
 			default: printf("Randomization error.");break;
 		}
 		if (currpos < 0) {

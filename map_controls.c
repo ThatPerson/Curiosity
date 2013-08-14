@@ -3,6 +3,8 @@
 
 Position to_position(int loc) {
 	Position pos;
+	pos.x = 0;
+	pos.y = 0;
 	while (loc >= map_size_x) {
 		pos.x++;
 		loc -= map_size_x;
@@ -50,15 +52,34 @@ int take(char * map, Position p) {
 }
 	
 int check_ground(char * map, int loc) {
+
+
+	Position ql = to_position(loc);
+
+	int i;
+	for (i = 0; i < food.count; i++) {
+		if ((ql.x == food.pos[i].x) && (ql.y == food.pos[i].y)) {
+			printf("You see food on the ground.\n");
+		}
+	}
+	for (i = 0; i < water.count; i++) {
+		if ((ql.x == water.pos[i].x) && (ql.y == water.pos[i].y)) {
+			printf("You see water on the floor, nicely packed into a very portable bottle.\n");
+		}
+	}
 	switch (map[loc]) {
 		case '#': printf("You wander in the woodland\n"); return 1;
 		case 'L': printf("A lake blocks your path\n"); return 0;
 		case 'C': printf("A bland cave wall bears down on you\n"); return 0;
+		case 'c': printf("You walk in the cave\n"); return 1;
 		case 'P': printf("You go along the path\n"); return 1;
 		case 'H': printf("There is a wall to a house\n"); return 0;
+		case 'M': printf("There is a mountain\n"); return 0;
 		case 'o': printf("There is a pit. You fall down it, and loose water and food.\n"); player.water = player.water/2; player.food = player.food - 30; return 1;
+		case '.': printf("You walk over the marshland\n"); return 1;
 		default: return 1;
 	}
+	
 	return 1;
 }
 
