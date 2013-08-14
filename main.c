@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
 	player.water = 500;
 	player.food = 500;
 	while (1==1) {
+		printf("> ");
 		scanf("%49s", input);
 		if (input[0] == 'n') {
 			if (input[1] == 'e') {

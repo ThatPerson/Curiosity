@@ -10,10 +10,12 @@ int absol(int q) {
 
 void draw_diamond(char * map, int currpos, int radius, char put) {
 	int i, l;
-	for (i = -radius; i <= radius; i++) {
-		for (l = -(radius-absol(i)); l <= (radius-absol(i)); l++) {
-			map[currpos+(i*map_size_y)+l] = put;
-			//printf("> \t%d/%d\n", i, l);
+	if (currpos > ((radius*map_size_y)+radius)) {
+		for (i = -radius; i <= radius; i++) {
+			for (l = -(radius-absol(i)); l <= (radius-absol(i)); l++) {
+				map[currpos+(i*map_size_y)+l] = put;
+				//printf("> \t%d/%d\n", i, l);
+			}
 		}
 	}
 	return;
@@ -25,26 +27,32 @@ void woodlands(char * map, int currpos) {
 }
 
 void path(char * map, int currpos) {
-	map[currpos] = 'P';
-	map[currpos+1] = 'P';
+	if (currpos > 0) {
+		map[currpos] = 'P';
+		map[currpos+1] = 'P';
+	}
 }
 
 void cave(char *map, int currpos) {
-	map[currpos-map_size_x+1] = 'C';
-	map[currpos-map_size_x-1] = 'C';
-	map[currpos+map_size_x+1] = 'C';
-	map[currpos+map_size_x-1] = 'C';
-	int q;
-	int i;
-	for (i = 0; i < 2; i++) {
-		q = rand()%4;
-		switch (q) {
-			case 0: map[currpos-map_size_x] = 'C'; break;
-			case 1: map[currpos+map_size_x] = 'C'; break;
-			case 2: map[currpos+1] = 'C'; break;
-			case 3: map[currpos-1] = 'C'; break;
-			default: printf("Randomization error.\n"); break;
+	if (currpos > (map_size_x+2)) {
+		map[currpos-map_size_x+1] = 'C';
+		map[currpos-map_size_x-1] = 'C';
+		map[currpos+map_size_x+1] = 'C';
+		map[currpos+map_size_x-1] = 'C';
+		int q;
+		int i;
+		for (i = 0; i < 2; i++) {
+			q = rand()%4;
+			switch (q) {
+				case 0: map[currpos-map_size_x] = 'C'; break;
+				case 1: map[currpos+map_size_x] = 'C'; break;
+				case 2: map[currpos+1] = 'C'; break;
+				case 3: map[currpos-1] = 'C'; break;
+				default: printf("Randomization error.\n"); break;
+			}
 		}
+	} else {
+		return;
 	}
 }
 
@@ -56,9 +64,9 @@ void gen_area(char * map, int size, void (*wr)(char *, int)) {
 
 	int i;
 	int currpos = (map_size_y*(rand()%map_size_y))+rand()%map_size_x;
-	printf("%d\n", currpos);
+
 	Position q = to_position(currpos);
-	printf("%d/%d\n", q.x, q.y);
+
 	for (i = 0; i < size; i++) {
 		/* The woodlands pattern is as so:
 		 *  @
@@ -76,12 +84,15 @@ void gen_area(char * map, int size, void (*wr)(char *, int)) {
 			case 3: currpos = currpos+map_size_x; break;
 			default: printf("Randomization error.");break;
 		}
+		if (currpos < 0) {
+			currpos = ((map_size_x*(map_size_y/2))+(map_size_x/2));
+		}
 	}
 	return;
 }
 
 void gen_map(char * map, int rand) {
-	map[0] = '#';
+
 	//Cover it with marshland
 	int i;
 	srand(rand);
