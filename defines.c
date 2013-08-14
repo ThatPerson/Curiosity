@@ -29,3 +29,11 @@ Player player;
 #define min_food 7
 #define water_inc 20
 #define food_inc 25
+#define num_woodlands 50
+#define woodland_size 50
+#define path_size 100
+#define num_paths 60
+#define cave_size 20
+#define num_caves 30
+#define num_mountains 20
+#define mountain_size 30

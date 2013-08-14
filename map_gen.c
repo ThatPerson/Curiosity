@@ -1,7 +1,59 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void gen_woodlands(char * map, int size) {
+int absol(int q) {
+	if (q < 0) {
+		q = 0-q;
+	}
+	return q;
+}
+
+void draw_diamond(char * map, int currpos, int radius, char put) {
+	int i, l;
+	for (i = -radius; i <= radius; i++) {
+		for (l = -(radius-absol(i)); l <= (radius-absol(i)); l++) {
+			map[currpos+(i*map_size_y)+l] = put;
+			//printf("> \t%d/%d\n", i, l);
+		}
+	}
+	return;
+}
+
+void woodlands(char * map, int currpos) {
+	draw_diamond(map, currpos, 2, '#');
+	
+}
+
+void path(char * map, int currpos) {
+	map[currpos] = 'P';
+	map[currpos+1] = 'P';
+}
+
+void cave(char *map, int currpos) {
+	map[currpos-map_size_x+1] = 'C';
+	map[currpos-map_size_x-1] = 'C';
+	map[currpos+map_size_x+1] = 'C';
+	map[currpos+map_size_x-1] = 'C';
+	int q;
+	int i;
+	for (i = 0; i < 2; i++) {
+		q = rand()%4;
+		switch (q) {
+			case 0: map[currpos-map_size_x] = 'C'; break;
+			case 1: map[currpos+map_size_x] = 'C'; break;
+			case 2: map[currpos+1] = 'C'; break;
+			case 3: map[currpos-1] = 'C'; break;
+			default: printf("Randomization error.\n"); break;
+		}
+	}
+}
+
+void mountain(char *map, int currpos) {
+	draw_diamond(map, currpos, 1, 'M');
+}
+
+void gen_area(char * map, int size, void (*wr)(char *, int)) {
+
 	int i;
 	int currpos = (map_size_y*(rand()%map_size_y))+rand()%map_size_x;
 	printf("%d\n", currpos);
@@ -14,20 +66,16 @@ void gen_woodlands(char * map, int size) {
 		 *  @
 		 * where the @ are replication positions
 		 */
+		wr(map, currpos);
 
-		 map[currpos] = '#';
-		 map[currpos+1] = '#';
-		 map[currpos-1] = '#';
-		 map[currpos-map_size_x] = '#';
-		 map[currpos+map_size_x] = '#';
-		 int v = rand()%4;
-		 switch (v) {
-		 	case 0: currpos = currpos-1; break;
-		 	case 1: currpos = currpos+1; break;
-		 	case 2: currpos = currpos-map_size_x; break;
-		 	case 3: currpos = currpos+map_size_x; break;
-		 	default: printf("Randomization error.");break;
-		 }
+		int v = rand()%4;
+		switch (v) {
+			case 0: currpos = currpos-1; break;
+			case 1: currpos = currpos+1; break;
+			case 2: currpos = currpos-map_size_x; break;
+			case 3: currpos = currpos+map_size_x; break;
+			default: printf("Randomization error.");break;
+		}
 	}
 	return;
 }
@@ -42,7 +90,16 @@ void gen_map(char * map, int rand) {
 	}
 	// Generate some woods
 	for (i = 0; i < num_woodlands; i++) {
-		gen_woodlands(map, woodland_size);
+		gen_area(map, woodland_size, woodlands);
+	}
+	for (i = 0; i < num_mountains; i++) {
+		gen_area(map, mountain_size, mountain);
+	}
+	for (i = 0; i < num_paths; i++) {
+		gen_area(map, path_size, path);
+	}
+	for (i = 0; i < num_caves; i++) {
+		gen_area(map, cave_size, cave);
 	}
 	return;
 }
