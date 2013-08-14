@@ -17,10 +17,10 @@ int main(int argc, char *argv[]) {
 	char *mapl;
 	mapl = map;
 	mapl[0] = '#';
-	gen_map(mapl);
+	gen_map(mapl, 400);
 	char input[50];
-	player.water = 50;
-	player.food = 50;
+	player.water = 500;
+	player.food = 500;
 	while (1==1) {
 		scanf("%49s", input);
 		if (input[0] == 'n') {
